@@ -1,0 +1,44 @@
+syntax = "proto3";
+package proto;
+
+import "pb/common.proto";
+
+//do接口，执行本地sql
+message DoRequest {
+    Path requestPath = 1;
+    string sql = 2;
+    string tid = 3;
+    string ltid = 4;
+    string traceId = 5;
+}
+message DoReply {
+    ReplyInfo replyInfo = 1;
+    string dbRes = 2;
+    string tid = 3;
+    string ltid = 4;
+    string traceId = 5;
+}
+
+//分支事务的提交,强一致下才有效，默认情况下，分支事务report时已提交
+message CommitRequest {
+    Path requestPath = 1;
+    string tid = 2;
+    string ltid = 3;
+    string traceId = 4;
+}
+message CommitReply {
+    ReplyInfo replyInfo = 1;
+    string traceId = 2;
+}
+
+//通知TM分支事务的回滚
+message RollbackRequest {
+    Path requestPath = 1;
+    string tid = 2;
+    string ltid = 3;
+    string traceId = 4;
+}
+message RollbackReply {
+    ReplyInfo replyInfo = 1;
+    string traceId = 2;
+}

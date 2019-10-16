@@ -1,0 +1,17 @@
+syntax = "proto3";
+package proto;
+
+import "pb/tc.proto";
+
+service TcServer {
+//    rpc Start (StartRequest) returns (StartReply) {}
+    rpc GlobalCommit (GlobalCommitRequest) returns (GlobalCommitReply) {}
+    rpc GlobalRollback (GlobalRollbackRequest) returns (GlobalRollbackReply) {}
+    rpc Register (RegisterRequest) returns (RegisterReply) {}
+    rpc Report (ReportRequest) returns (ReportReply) {}
+}
+
+//service TmServer {
+//    rpc Do (DoRequest) returns (DoReply) {}
+//    rpc Rollback (RollbackRequest) returns (RollbackReply) {}
+//}

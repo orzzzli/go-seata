@@ -1,0 +1,81 @@
+syntax = "proto3";
+package proto;
+
+import "pb/common.proto";
+
+//start，业务方调用，注册全局tid，并标记该service为此事务的发起者，全部为同步请求情况下，可以省略该步骤，tid由子业务自己生成。
+message StartRequest {
+    Path requestPath = 1;
+    string traceId = 2;
+}
+message StartReply {
+    ReplyInfo replyInfo = 1;
+    string tid = 2;
+    string traceId = 3;
+}
+
+//globalCommit，业务方调用，全局提交，只有此事务的发起者才可以发起该请求。
+message GlobalCommitRequest {
+    Path requestPath = 1;
+    string tid = 2;
+    string lockKey = 3;
+    string traceId = 4;
+}
+message GlobalCommitReply {
+    ReplyInfo replyInfo = 1;
+    string traceId = 2;
+}
+
+//globalRollback，业务方调用，全局回滚，只有此事务的发起者才可以发起该请求。
+message GlobalRollbackRequest {
+    Path requestPath = 1;
+    string tid = 2;
+    string traceId = 3;
+}
+message GlobalRollbackReply {
+    ReplyInfo replyInfo = 1;
+    string traceId = 2;
+}
+
+//锁结构，所有字段均是为了保证锁的唯一性，不污染其他情况下数据，因此其中的库与连接实际上只是一个标记而已。
+message Lock {
+    string primaryK = 1;    //主键key
+    string primaryV = 2;    //主键value
+    string table = 3;       //表
+    string database = 4;    //库
+    string connection = 5;  //连接
+}
+
+//register，RM或TM调用，调用时机为commit之前，请求锁成功后本地commit。注册分支事务，提交需锁的内容，尝试上锁。
+message RegisterRequest {
+    Path requestPath = 1;
+    string tid = 2;
+    repeated Lock locks = 3;
+    string traceId = 4;
+}
+message RegisterReply {
+    ReplyInfo replyInfo = 1;
+    bool lock = 2;      //是否锁成功
+    string ltid = 3;    //分支事务id
+    string traceId = 4;
+}
+
+//分支事务状态
+enum LocalTransactionStatus {
+    UNKNOW = 0;
+    COMMITED = 1;
+    ROLLBACKED = 2;
+}
+
+//report，RM或TM调用，调用时机为commit/rollback之后。报告分支支付状态
+message ReportRequest {
+    Path requestPath = 1;
+    string tid = 2;
+    string ltid = 3;
+    LocalTransactionStatus status = 4;
+    string traceId = 5;
+}
+message ReportReply {
+    ReplyInfo replyInfo = 1;
+    string traceId = 2;
+}

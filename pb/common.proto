@@ -1,0 +1,17 @@
+syntax = "proto3";
+package proto;
+
+message ServiceInfo {
+    string appid = 1;
+    string name = 2;
+}
+
+//请求service信息列表，用于链路追踪等。
+message Path {
+    repeated ServiceInfo infos = 1;
+}
+
+message ReplyInfo {
+    int32 code = 1;
+    string message = 2;
+}
