@@ -48,22 +48,22 @@ func (r *Rm) DoSQL(traceId string, tid string, ltid string, sql string) (trans *
 		DbRes:   nil,
 	}
 
-	sqlProxy, err := proxy.New(tid, sql)
+	sqlProxy, err := proxy.New(sql)
 	if err != nil {
 		return message, err
 	}
 
 	//开启事务，并且全局事务id为""
-	if sqlProxy.SQLType == proxy.SQLBegin && sqlProxy.Tid == "" {
+	if sqlProxy.SQLType == proxy.SQLBegin && tid == "" {
 		util.LogNotice(traceId, "start global transaction.")
 		//生成全局事务id
 		uuid, err := uuid2.NewV4()
 		if err != nil {
 			return message, err
 		}
-		sqlProxy.Tid = uuid.String()
-		message.Tid = sqlProxy.Tid
-		util.LogNotice(traceId, "new tid is "+sqlProxy.Tid)
+		tid = uuid.String()
+		message.Tid = tid
+		util.LogNotice(traceId, "new tid is "+tid)
 	}
 
 	//commit前请求锁
@@ -81,7 +81,7 @@ func (r *Rm) DoSQL(traceId string, tid string, ltid string, sql string) (trans *
 		}
 	}
 
-	res, err := r.Execute(sqlProxy)
+	res, err := r.Execute(tid, sqlProxy)
 	if err != nil {
 		return message, err
 	}
@@ -143,7 +143,7 @@ func (r *Rm) insertTransactionLog(sqlP *proxy.SQLProxy, ids []string, beforeCols
 	return nil
 }
 
-func (r *Rm) Execute(sqlP *proxy.SQLProxy) (interface{}, error) {
+func (r *Rm) Execute(tid string, sqlP *proxy.SQLProxy) (interface{}, error) {
 	if sqlP.SQLType == proxy.SQLSelect {
 		return r.selectFromDB(sqlP.OriginSQL)
 	}
@@ -169,7 +169,7 @@ func (r *Rm) Execute(sqlP *proxy.SQLProxy) (interface{}, error) {
 		}
 
 		for _, v := range ids {
-			err = lock.SetLocalLock(sqlP.Tid, sqlP.Connection, sqlP.Database, sqlP.TableName, "id", v)
+			err = lock.SetLocalLock(tid, sqlP.Connection, sqlP.Database, sqlP.TableName, "id", v)
 			if err != nil {
 				return nil, err
 			}

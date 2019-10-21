@@ -24,7 +24,6 @@ const (
 type SQLProxy struct {
 	Connection string
 	Database   string
-	Tid        string
 	OriginSQL  string
 	UpperSQL   string
 	SQLType    SQLType
@@ -33,9 +32,8 @@ type SQLProxy struct {
 	ChangeMap  map[string]string
 }
 
-func New(tid string, sql string) (*SQLProxy, error) {
+func New(sql string) (*SQLProxy, error) {
 	proxy := new(SQLProxy)
-	proxy.Tid = tid
 	proxy.Connection = "db-user" //todo:改成从配置读取
 	proxy.Database = "user"
 
@@ -183,7 +181,7 @@ func (p *SQLProxy) analyseSQLWhere() error {
 	return nil
 }
 
-//解析sql修改的字段，目前只有update
+//解析sql修改的字段，目前只有update.todo:新增对insert的支持
 func (p *SQLProxy) analyseSQLChange() error {
 	p.ChangeMap = make(map[string]string)
 	//UPDATE table SET ... WHERE ...

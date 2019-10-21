@@ -1,56 +1,99 @@
 package lock
 
 import (
-	"errors"
+	"goseata/proto"
 	"goseata/tc/redis"
-
-	"github.com/orzzzli/orzconfiger"
 )
 
-func getTempLockKey(appid string, tid string) string {
-	return "tc." + appid + "." + tid
+type Lock struct {
+	appid       string
+	tid         string
+	pLock       *proto.Lock
+	TempListKey string
 }
 
-func setTempLock(key string, lockStr string) error {
-	err := redis.LPush(key, lockStr)
+func New(appid string, tid string, plock *proto.Lock) *Lock {
+	lock := &Lock{
+		appid: appid,
+		tid:   tid,
+		pLock: plock,
+	}
+	if lock.pLock == nil {
+		lock.pLock = &proto.Lock{}
+	}
+	lock.getTempLockListKey()
+	return lock
+}
+
+/*
+	pLock setter.
+*/
+func (l *Lock) SetPLock(plock *proto.Lock) {
+	l.pLock = plock
+}
+
+/*
+	Lock str, row lock.
+	Format: connection|database|table|primaryKey|primaryValue
+*/
+func (l *Lock) ToStr() string {
+	return l.pLock.Connection + "|" + l.pLock.Database + "|" + l.pLock.Table + "|" + l.pLock.PrimaryK + "|" + l.pLock.PrimaryV
+}
+
+/*
+	Create tc local temp lock list key.
+	Temp lock list use to storage all this tid contain locks.
+	This list storage in redis.
+
+	Format: tc.appid.tid
+*/
+func (l *Lock) getTempLockListKey() {
+	l.TempListKey = "tc." + l.appid + "." + l.tid
+}
+
+/*
+	LPush lock str to local temp lock list.
+*/
+func (l *Lock) setTempLock() error {
+	err := redis.LPush(l.TempListKey, l.ToStr())
 	return err
 }
 
-func getLockStr(connect string, database string, table string, primaryK string, primaryV string) string {
-	return connect + "|" + database + "|" + table + "|" + primaryK + "|" + primaryV
-}
-
-func SetLock(tid string, connect string, database string, table string, primaryK string, primaryV string) (bool, string, error) {
-	lockStr := getLockStr(connect, database, table, primaryK, primaryV)
-	success, err := redis.SetNx(lockStr, "1", 0)
+/*
+	Actual lock action func.
+	Use redis setNx to simulate global lock.
+*/
+func (l *Lock) Lock() (lockSuccess bool, setLockErr error, clearLockErr error) {
+	success, err := redis.SetNx(l.ToStr(), "1", 0)
+	//set lock error. clear this session all lock.
+	if err != nil {
+		//clear already set lock avoid dead lock.
+		err2 := l.ClearLocks()
+		return false, err, err2
+	}
+	//set lock fail. clear this session all lock.
+	if !success {
+		err2 := l.ClearLocks()
+		return false, nil, err2
+	}
 	if success {
-		appid, find := orzconfiger.GetString("service", "appid")
-		if !find {
-			err = errors.New("read config error: cant get appid from config")
-			//避免死锁
-			redis.Del(lockStr)
-			return false, "", err
-		}
-		tempLockKey := getTempLockKey(appid, tid)
-		err = setTempLock(tempLockKey, lockStr)
+		err = l.setTempLock()
 		if err != nil {
-			//避免死锁
-			redis.Del(lockStr)
-			return false, "", err
+			err2 := l.ClearLocks()
+			return false, err, err2
 		}
 	}
-	return success, lockStr, err
+	return success, err, nil
 }
 
-//todo:出错重点关注，清除锁失败会引起死锁
-func RmLocks(tid string) error {
-	appid, find := orzconfiger.GetString("service", "appid")
-	if !find {
-		err := errors.New("read config error: cant get appid from config")
-		return err
-	}
-	lockKey := getTempLockKey(appid, tid)
-	locks, err := redis.LRange(lockKey, 0, -1)
+/*
+	Clear all type locks.
+	Contain db row locks and temp local lock list.
+
+	Todo:This error must take care, it may cause dead lock.
+*/
+func (l *Lock) ClearLocks() error {
+	locks, err := redis.LRange(l.TempListKey, 0, -1)
 	if err != nil {
 		return err
 	}
@@ -60,8 +103,8 @@ func RmLocks(tid string) error {
 			return err
 		}
 	}
-	//清除本地锁信息
-	err = redis.Del(lockKey)
+	//clear temp local lock list.
+	err = redis.Del(l.TempListKey)
 	if err != nil {
 		return err
 	}

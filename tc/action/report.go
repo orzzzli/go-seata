@@ -2,60 +2,62 @@ package action
 
 import (
 	"context"
-	"errors"
 	"goseata/proto"
+	"goseata/tc/consts"
+	error2 "goseata/tc/error"
+	"goseata/tc/log"
 	"goseata/tc/mysql"
-	"goseata/util"
 )
 
 func (s *TcServer) Report(ctx context.Context, req *proto.ReportRequest) (*proto.ReportReply, error) {
 	//打印trace
-	util.Trace(req.TraceId, "report", req.RequestPath)
+	log.New(req.TraceId, "report", req.RequestPath).ToLog()
 
 	status := req.Status
 
 	transactionDB, find := mysql.DBPoolsInstance.GetPool("db-transaction")
 	if !find {
-		err := errors.New("transaction db not found")
-		return handleRepError(1000, req.TraceId, err, ""), nil
+		return handleRepError(req.TraceId, consts.DBError, nil, "transaction db not found.")
 	}
 
 	//更新分支事务状态
 	_, err := transactionDB.Exec("update `local_transaction` set status = ? where id = ?", status, req.Ltid)
 	if err != nil {
-		return handleRepError(1100, req.TraceId, err, "update local transaction status error"), nil
+		return handleRepError(req.TraceId, consts.DBError, err, "update local transaction status error.", status, req.Ltid)
 	}
 
 	//触发全局回滚
 	if status == proto.LocalTransactionStatus_ROLLBACKED {
-		util.LogNotice(req.TraceId, "trigger global rollback. tid is "+req.Tid)
+		log.New(req.TraceId, "report", "trigger global rollback.", req.Tid).ToLog()
+
 		greply, err := s.GlobalRollback(ctx, &proto.GlobalRollbackRequest{
 			RequestPath: req.RequestPath,
 			Tid:         req.Tid,
 			TraceId:     req.TraceId,
 		})
 		if err != nil {
-			return handleRepError(1200, req.TraceId, err, "global rollback error"), nil
+			return handleRepError(req.TraceId, consts.GRPCError, err, "global rollback error.", req.RequestPath, req.Tid, req.TraceId)
 		}
 		if greply.ReplyInfo.Code != 0 {
-			err = errors.New(greply.ReplyInfo.Message)
-			return handleRepError(int(greply.ReplyInfo.Code), greply.TraceId, err, ""), nil
+			return handleRepError(req.TraceId, consts.BusinessError, nil, greply.ReplyInfo.Message, greply)
 		}
 	}
+	log.New(req.TraceId, "report", "success.", req.Tid, status).ToLog()
 
 	return &proto.ReportReply{
-		ReplyInfo: reply(0, "success"),
-		TraceId:   req.TraceId,
+		ReplyInfo: &proto.ReplyInfo{
+			Code:    0,
+			Message: "success",
+		},
+		TraceId: req.TraceId,
 	}, nil
 }
 
-func handleRepError(code int, traceId string, err error, info string) *proto.ReportReply {
-	if info != "" {
-		err = errors.New(err.Error() + " Info:" + info)
-	}
-	util.LogError(traceId, err)
+func handleRepError(traceId string, code int, err error, extends ...interface{}) (*proto.ReportReply, error) {
+	errorObj := error2.New(traceId, code, err, extends)
+	errorObj.ToLog()
 	return &proto.ReportReply{
-		ReplyInfo: reply(code, err.Error()),
+		ReplyInfo: errorObj.ToReplyInfo(),
 		TraceId:   traceId,
-	}
+	}, nil
 }

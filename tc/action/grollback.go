@@ -5,10 +5,12 @@ import (
 	"encoding/json"
 	"errors"
 	"goseata/proto"
+	"goseata/tc/consts"
+	error2 "goseata/tc/error"
 	"goseata/tc/lock"
+	"goseata/tc/log"
 	"goseata/tc/model"
 	"goseata/tc/mysql"
-	"goseata/util"
 	"strings"
 
 	"github.com/orzzzli/orzconfiger"
@@ -16,47 +18,59 @@ import (
 
 func (s *TcServer) GlobalRollback(ctx context.Context, req *proto.GlobalRollbackRequest) (*proto.GlobalRollbackReply, error) {
 	//打印trace
-	util.Trace(req.TraceId, "globalRollback", req.RequestPath)
+	log.New(req.TraceId, "globalRollback", req.RequestPath).ToLog()
 
 	transactionDB, find := mysql.DBPoolsInstance.GetPool("db-transaction")
 	if !find {
-		err := errors.New("transaction db not found")
-		return handleGrError(3000, req.TraceId, err, ""), nil
+		return handleGrError(req.TraceId, consts.DBError, nil, "transaction db not found.")
 	}
 
 	var localTransactions []*model.LocalTransaction
 	err := transactionDB.Select(&localTransactions, "SELECT * FROM `local_transaction` where tid = ?", req.Tid)
 	if err != nil {
-		return handleGrError(3100, req.TraceId, err, "select local transaction error. tid is"+req.Tid), nil
+		return handleGrError(req.TraceId, consts.DBError, err, "select local transaction error.", req.Tid)
 	}
 
 	for _, v := range localTransactions {
 		appid := v.Appid
 		connect, find := orzconfiger.GetString(appid, "connect")
 		if !find {
-			err = errors.New("get connect string error.appid is " + appid + " tid is" + req.Tid)
-			return handleGrError(3200, req.TraceId, err, ""), nil
+			return handleGrError(req.TraceId, consts.ConfigError, nil, "get config connect error.", appid)
 		}
+
+		log.New(req.TraceId, "globalRollback.begin rollback", connect, req.Tid).ToLog()
+
 		err := rollback(req.TraceId, connect, req.Tid)
 		if err != nil {
-			return handleGrError(3300, req.TraceId, err, "rollback error.connect is "+connect+" tid is"+req.Tid), nil
+			return handleGrError(req.TraceId, consts.BusinessError, err, "rollback error.", connect, req.Tid)
 		}
 		//更新分支事务状态
 		_, err = transactionDB.Exec("update `local_transaction` set status = ? where id = ?", model.LocalTransactionStatusRollbacked, v.Id)
 		if err != nil {
-			return handleGrError(3400, req.TraceId, err, "update local transaction status error"), nil
+			return handleGrError(req.TraceId, consts.DBError, err, "update local transaction status error.", v.Id)
 		}
+
+		log.New(req.TraceId, "globalRollback.rollback success", connect, req.Tid).ToLog()
 	}
 
 	//清除锁
-	err = lock.RmLocks(req.Tid)
-	if err != nil {
-		return handleGrError(3500, req.TraceId, err, "clear lock error."), nil
+	appid, find := orzconfiger.GetString("service", "appid")
+	if !find {
+		return handleGrError(req.TraceId, consts.ConfigError, nil, "get config appid error.", appid)
 	}
+	lockManager := lock.New(appid, req.Tid, nil)
+	err = lockManager.ClearLocks()
+	if err != nil {
+		return handleGrError(req.TraceId, consts.LockError, err, "clear lock error.", lockManager.ToStr())
+	}
+	log.New(req.TraceId, "globalRollback.clear lock success.", lockManager.ToStr()).ToLog()
 
 	return &proto.GlobalRollbackReply{
-		ReplyInfo: reply(0, "success"),
-		TraceId:   req.TraceId,
+		ReplyInfo: &proto.ReplyInfo{
+			Code:    0,
+			Message: "success",
+		},
+		TraceId: req.TraceId,
 	}, nil
 }
 
@@ -93,7 +107,8 @@ func rollback(traceId string, connectionStr string, tid string) error {
 			undoSql = undoSql[0 : strings.Count(undoSql, "")-2]
 			undoSql += " WHERE " + primaryK + "='" + primaryV + "'"
 		}
-		util.LogNotice(traceId, "undo sql is "+undoSql)
+
+		log.New(traceId, "globalRollback.rollback", undoSql).ToLog()
 
 		_, err = oneDB.Exec(undoSql)
 		if err != nil {
@@ -103,13 +118,11 @@ func rollback(traceId string, connectionStr string, tid string) error {
 	return nil
 }
 
-func handleGrError(code int, traceId string, err error, info string) *proto.GlobalRollbackReply {
-	if info != "" {
-		err = errors.New(err.Error() + " Info:" + info)
-	}
-	util.LogError(traceId, err)
+func handleGrError(traceId string, code int, err error, extends ...interface{}) (*proto.GlobalRollbackReply, error) {
+	errorObj := error2.New(traceId, code, err, extends)
+	errorObj.ToLog()
 	return &proto.GlobalRollbackReply{
-		ReplyInfo: reply(code, err.Error()),
+		ReplyInfo: errorObj.ToReplyInfo(),
 		TraceId:   traceId,
-	}
+	}, nil
 }
