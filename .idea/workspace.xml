@@ -2,26 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0c2f1962-a58e-49c2-b4eb-092336181c83" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/tc/consts/const.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tc/error/handler.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tc/error/handler_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tc/lock/lock_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tc/log/handler.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tc/log/handler_test.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tc/log/notice.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rm/proxy/proxy.go" beforeDir="false" afterPath="$PROJECT_DIR$/rm/proxy/proxy.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rm/rm.go" beforeDir="false" afterPath="$PROJECT_DIR$/rm/rm.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tc/action/gcommit.go" beforeDir="false" afterPath="$PROJECT_DIR$/tc/action/gcommit.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tc/action/grollback.go" beforeDir="false" afterPath="$PROJECT_DIR$/tc/action/grollback.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tc/action/register.go" beforeDir="false" afterPath="$PROJECT_DIR$/tc/action/register.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tc/action/report.go" beforeDir="false" afterPath="$PROJECT_DIR$/tc/action/report.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tc/action/start.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tc/config.ini" beforeDir="false" afterPath="$PROJECT_DIR$/tc/config.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tc/lock/lock.go" beforeDir="false" afterPath="$PROJECT_DIR$/tc/lock/lock.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/log.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/trace.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tc/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/tc/main.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -32,10 +13,19 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tc/config.ini">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="323">
+              <caret line="17" column="16" selection-start-line="17" selection-start-column="16" selection-end-line="17" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tc/action/register.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="382">
-              <caret line="63" column="112" lean-forward="true" selection-start-line="63" selection-start-column="12" selection-end-line="63" selection-end-column="112" />
+              <caret line="63" column="112" selection-start-line="63" selection-start-column="12" selection-end-line="63" selection-end-column="112" />
               <folding>
                 <element signature="e#16#205#0" expanded="true" />
               </folding>
@@ -47,7 +37,7 @@
         <entry file="file://$PROJECT_DIR$/tc/action/report.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="557">
-              <caret line="50" column="10" lean-forward="true" selection-start-line="47" selection-start-column="8" selection-end-line="50" selection-end-column="10" />
+              <caret line="50" column="10" selection-start-line="47" selection-start-column="8" selection-end-line="50" selection-end-column="10" />
               <folding>
                 <element signature="e#16#100#0" expanded="true" />
               </folding>
@@ -59,7 +49,7 @@
         <entry file="file://$PROJECT_DIR$/tc/action/grollback.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="519">
-              <caret line="71" column="10" lean-forward="true" selection-start-line="68" selection-start-column="8" selection-end-line="71" selection-end-column="10" />
+              <caret line="71" column="10" selection-start-line="68" selection-start-column="8" selection-end-line="71" selection-end-column="10" />
               <folding>
                 <element signature="e#16#202#0" expanded="true" />
                 <element signature="n#!!block;n#rollback#0" />
@@ -69,14 +59,69 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tc/action/gcommit.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="676">
-              <caret line="49" column="10" selection-start-line="49" selection-start-column="10" selection-end-line="49" selection-end-column="10" />
+            <state relative-caret-position="266">
+              <caret line="14" selection-start-line="14" selection-end-line="14" />
               <folding>
                 <element signature="e#16#214#0" expanded="true" />
+                <element signature="n#!!block;n#GlobalCommit#0" />
                 <element signature="n#!!block;n#handleGrError#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/rm/rm.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="122" lean-forward="true" selection-start-line="122" selection-end-line="122" />
+              <folding>
+                <element signature="n#!!block;n#New#0" />
+                <element signature="n#!!block;n#insertTransactionLog#0" />
+                <element signature="n#!!block;n#Execute#0" />
+                <element signature="n#!!block;n#selectFromDB#0" />
+                <element signature="n#!!block;n#ExecFromFB#0" />
+                <element signature="n#!!block;n#buildBeforeImage#0" />
+                <element signature="n#!!block;n#buildAfterImage#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tc/log/handler.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="304">
+              <caret line="76" column="23" lean-forward="true" selection-start-line="76" selection-start-column="23" selection-end-line="76" selection-end-column="23" />
+              <folding>
+                <element signature="n#!!block;n#InitLogHandler#0" />
+                <element signature="n#!!block;n#SendError#0" />
+                <element signature="n#!!block;n#ReadNotice#0" />
+                <element signature="n#!!block;n#ReadError#0" />
+                <element signature="n#!!block;n#WriteNotice#0" />
+                <element signature="n#!!block;n#WriteError#0" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tc/main.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="242">
+              <caret line="36" column="25" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="25" />
+              <folding>
+                <element signature="e#14#177#0" expanded="true" />
+                <element signature="e#335#378#0" />
+                <element signature="e#443#486#0" />
+                <element signature="e#556#602#0" />
+                <element signature="e#680#727#0" />
+                <element signature="e#789#836#0" />
+                <element signature="e#919#965#0" />
+                <element signature="e#1124#1169#0" />
               </folding>
             </state>
           </provider>
@@ -144,7 +189,6 @@
         <option value="$PROJECT_DIR$/test-tm_test.go" />
         <option value="$PROJECT_DIR$/tc/chan/chan.go" />
         <option value="$PROJECT_DIR$/tc/channel/chan.go" />
-        <option value="$PROJECT_DIR$/tc/main.go" />
         <option value="$PROJECT_DIR$/tc/model/transactionlog.go" />
         <option value="$PROJECT_DIR$/tc/model/ltransaction.go" />
         <option value="$PROJECT_DIR$/rm/client/grollback.go" />
@@ -174,14 +218,15 @@
         <option value="$PROJECT_DIR$/tc/action/report.go" />
         <option value="$PROJECT_DIR$/tc/action/grollback.go" />
         <option value="$PROJECT_DIR$/tc/action/gcommit.go" />
+        <option value="$PROJECT_DIR$/tc/main.go" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="1289" />
-    <option name="y" value="28" />
-    <option name="width" value="1900" />
-    <option name="height" value="1049" />
+    <option name="x" value="43" />
+    <option name="y" value="23" />
+    <option name="width" value="1705" />
+    <option name="height" value="777" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -202,30 +247,18 @@
             <path>
               <item name="go-seata" type="b2602c69:ProjectViewProjectNode" />
               <item name="go-seata" type="462c0819:PsiDirectoryNode" />
+              <item name="rm" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="go-seata" type="b2602c69:ProjectViewProjectNode" />
+              <item name="go-seata" type="462c0819:PsiDirectoryNode" />
               <item name="tc" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="go-seata" type="b2602c69:ProjectViewProjectNode" />
               <item name="go-seata" type="462c0819:PsiDirectoryNode" />
               <item name="tc" type="462c0819:PsiDirectoryNode" />
-              <item name="action" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="go-seata" type="b2602c69:ProjectViewProjectNode" />
-              <item name="go-seata" type="462c0819:PsiDirectoryNode" />
-              <item name="tc" type="462c0819:PsiDirectoryNode" />
-              <item name="consts" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="go-seata" type="b2602c69:ProjectViewProjectNode" />
-              <item name="go-seata" type="462c0819:PsiDirectoryNode" />
-              <item name="tc" type="462c0819:PsiDirectoryNode" />
-              <item name="error" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="go-seata" type="b2602c69:ProjectViewProjectNode" />
-              <item name="go-seata" type="462c0819:PsiDirectoryNode" />
-              <item name="util" type="462c0819:PsiDirectoryNode" />
+              <item name="log" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -372,16 +405,16 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1280" y="23" width="1920" height="1057" extended-state="6" />
+    <frame x="43" y="23" width="1237" height="777" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.4953368" visible="true" weight="0.12886049" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.4953368" visible="true" weight="0.15732217" />
       <window_info id="Structure" order="2" sideWeight="0.5046632" side_tool="true" weight="0.11821086" />
-      <window_info anchor="bottom" id="Terminal" order="0" weight="0.37512952" />
+      <window_info anchor="bottom" id="Terminal" order="0" visible="true" weight="0.3737226" />
       <window_info anchor="bottom" id="Database Changes" order="1" />
       <window_info anchor="bottom" id="Event Log" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Version Control" order="3" />
+      <window_info anchor="bottom" id="Version Control" order="3" weight="0.32953367" />
       <window_info anchor="bottom" id="Docker" order="4" show_stripe_button="false" />
       <window_info anchor="bottom" id="Message" order="5" />
       <window_info anchor="bottom" id="Find" order="6" />
@@ -513,23 +546,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/rm/rm.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="126" column="117" selection-start-line="126" selection-start-column="117" selection-end-line="126" selection-end-column="117" />
-          <folding>
-            <element signature="n#!!block;n#New#0" />
-            <element signature="n#!!block;n#DoSQL#0" />
-            <element signature="n#!!block;n#insertTransactionLog#0" />
-            <element signature="n#!!block;n#Execute#0" />
-            <element signature="n#!!block;n#selectFromDB#0" />
-            <element signature="n#!!block;n#ExecFromFB#0" />
-            <element signature="n#!!block;n#buildBeforeImage#0" />
-            <element signature="n#!!block;n#buildAfterImage#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/rm/client/grollback.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="152">
@@ -621,23 +637,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tc/main.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="462">
-          <caret line="33" selection-start-line="33" selection-end-line="33" />
-          <folding>
-            <element signature="e#14#177#0" expanded="true" />
-            <element signature="e#335#378#0" />
-            <element signature="e#443#486#0" />
-            <element signature="e#556#602#0" />
-            <element signature="e#680#727#0" />
-            <element signature="e#789#836#0" />
-            <element signature="e#919#965#0" />
-            <element signature="e#1124#1169#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/go/pkg/mod/github.com/orzzzli/orzconfiger@v1.0.2/configer.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="148">
@@ -720,22 +719,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tc/log/handler.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="16" column="1" lean-forward="true" selection-start-line="16" selection-start-column="1" selection-end-line="16" selection-end-column="1" />
-          <folding>
-            <element signature="n#!!block;n#InitLogHandler#0" />
-            <element signature="n#!!block;n#SendNotice#0" />
-            <element signature="n#!!block;n#SendError#0" />
-            <element signature="n#!!block;n#ReadNotice#0" />
-            <element signature="n#!!block;n#ReadError#0" />
-            <element signature="n#!!block;n#WriteNotice#0" />
-            <element signature="n#!!block;n#WriteError#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tc/lock/lock.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="304">
@@ -773,17 +756,52 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tc/config.ini">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="4" selection-start-line="4" selection-end-line="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/util/log.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="209">
           <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tc/action/start.go">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tc/config.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="17" column="16" selection-start-line="17" selection-start-column="16" selection-end-line="17" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tc/action/register.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="382">
+          <caret line="63" column="112" selection-start-line="63" selection-start-column="12" selection-end-line="63" selection-end-column="112" />
+          <folding>
+            <element signature="e#16#205#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tc/action/report.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="557">
+          <caret line="50" column="10" selection-start-line="47" selection-start-column="8" selection-end-line="50" selection-end-column="10" />
+          <folding>
+            <element signature="e#16#100#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tc/action/grollback.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="519">
+          <caret line="71" column="10" selection-start-line="68" selection-start-column="8" selection-end-line="71" selection-end-column="10" />
+          <folding>
+            <element signature="e#16#202#0" expanded="true" />
+            <element signature="n#!!block;n#rollback#0" />
+            <element signature="e#2443#3274#0" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -794,48 +812,62 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tc/action/start.go">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tc/action/register.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="382">
-          <caret line="63" column="112" lean-forward="true" selection-start-line="63" selection-start-column="12" selection-end-line="63" selection-end-column="112" />
-          <folding>
-            <element signature="e#16#205#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tc/action/report.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="557">
-          <caret line="50" column="10" lean-forward="true" selection-start-line="47" selection-start-column="8" selection-end-line="50" selection-end-column="10" />
-          <folding>
-            <element signature="e#16#100#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tc/action/grollback.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="71" column="10" lean-forward="true" selection-start-line="68" selection-start-column="8" selection-end-line="71" selection-end-column="10" />
-          <folding>
-            <element signature="e#16#202#0" expanded="true" />
-            <element signature="n#!!block;n#rollback#0" />
-            <element signature="e#2443#3274#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tc/action/gcommit.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="676">
-          <caret line="49" column="10" selection-start-line="49" selection-start-column="10" selection-end-line="49" selection-end-column="10" />
+        <state relative-caret-position="266">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
           <folding>
             <element signature="e#16#214#0" expanded="true" />
+            <element signature="n#!!block;n#GlobalCommit#0" />
             <element signature="n#!!block;n#handleGrError#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rm/rm.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="122" lean-forward="true" selection-start-line="122" selection-end-line="122" />
+          <folding>
+            <element signature="n#!!block;n#New#0" />
+            <element signature="n#!!block;n#insertTransactionLog#0" />
+            <element signature="n#!!block;n#Execute#0" />
+            <element signature="n#!!block;n#selectFromDB#0" />
+            <element signature="n#!!block;n#ExecFromFB#0" />
+            <element signature="n#!!block;n#buildBeforeImage#0" />
+            <element signature="n#!!block;n#buildAfterImage#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tc/log/handler.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="76" column="23" lean-forward="true" selection-start-line="76" selection-start-column="23" selection-end-line="76" selection-end-column="23" />
+          <folding>
+            <element signature="n#!!block;n#InitLogHandler#0" />
+            <element signature="n#!!block;n#SendError#0" />
+            <element signature="n#!!block;n#ReadNotice#0" />
+            <element signature="n#!!block;n#ReadError#0" />
+            <element signature="n#!!block;n#WriteNotice#0" />
+            <element signature="n#!!block;n#WriteError#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tc/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="242">
+          <caret line="36" column="25" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="25" />
+          <folding>
+            <element signature="e#14#177#0" expanded="true" />
+            <element signature="e#335#378#0" />
+            <element signature="e#443#486#0" />
+            <element signature="e#556#602#0" />
+            <element signature="e#680#727#0" />
+            <element signature="e#789#836#0" />
+            <element signature="e#919#965#0" />
+            <element signature="e#1124#1169#0" />
           </folding>
         </state>
       </provider>
